@@ -1,23 +1,40 @@
-import logo from './logo.svg';
+import { useEffect, useState } from "react";
 import './App.css';
 
 function App() {
+
+  const [post, setPost] = useState({});
+
+  const [postId, setPostId] = useState(1);
+
+  const [inputValue, setInputValue] = useState("");
+
+  const onInputChange = (event) => {
+    setInputValue(event.target.value);
+  }
+
+  const onButtonClick = (event) => {
+    setPostId(inputValue);
+  }
+
+  useEffect(() => {
+    fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`)
+      .then(res => res.json())
+      .then(data => setPost(data));
+  }, [postId]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Post</h1>
+      <label>Enter a post id:</label>
+      <br />
+      <input type="text" onChange={onInputChange} />
+      <br />
+      <button onClick={onButtonClick}>Get Post</button>
+      <div key={post.id}>
+        <h3>{post.title}</h3>
+        <p>{post.body}</p>
+      </div>
     </div>
   );
 }
